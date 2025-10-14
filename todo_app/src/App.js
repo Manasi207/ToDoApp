@@ -470,213 +470,28 @@
 
 // export default App;
 ///////////////////////////////////////////////////////////////////////?
-// // // App.js
-// import React, { useState, useEffect } from 'react';
-// import TodoItem from './components/TodoItem';
-// import { saveToLocalStorage, loadFromLocalStorage } from './utils/localStorage';
-// import './App.css';
-
-// function App() {
-//   // ✅ Load tasks from localStorage on first render
-//   const [tasks, setTasks] = useState(() => loadFromLocalStorage());
-//   const [taskInput, setTaskInput] = useState('');
-//   const [searchQuery, setSearchQuery] = useState('');
-//   const [successMessage, setSuccessMessage] = useState('');
-//   const [error, setError] = useState('');
-//   const [filterStatus, setFilterStatus] = useState('all');
-
-//   // ✅ Save tasks to localStorage whenever they change
-//   useEffect(() => {
-//     saveToLocalStorage(tasks);
-//   }, [tasks]);
-
-//   // Add new task
-//   const addTask = () => {
-//     setError('');
-//     setSuccessMessage('');
-
-//     const trimmedTask = taskInput.trim();
-//     if (!trimmedTask) {
-//       setError('Please enter a task');
-//       return;
-//     }
-// //Browser will store this data in local storage using JSON methods
-//     setTasks([
-//       ...tasks,
-//       { id: Date.now(), text: trimmedTask, completed: false }
-//     ]);
-//     setTaskInput('');
-//     setSuccessMessage('New Task Added !!!');
-
-//     setTimeout(() => setSuccessMessage(''), 3000);
-//   };
-
-//   // Toggle complete/incomplete
-//   const toggleTask = (id) =>
-//     setTasks(tasks.map(task =>
-//       task.id === id ? { ...task, completed: !task.completed } : task
-//     ));
-
-//   // Delete a task
-//   const deleteTask = (id) => setTasks(tasks.filter(task => task.id !== id));
-
-//   // Edit a task
-//   const editTask = (id, newText) =>
-//     setTasks(tasks.map(task =>
-//       task.id === id ? { ...task, text: newText } : task
-//     ));
-
-//   // Optional: Clear all tasks (localStorage + state)
-//   const clearAllTasks = () => {
-//     setTasks([]);
-//     localStorage.removeItem('todo-tasks');
-//     setSuccessMessage('All tasks cleared!');
-//     setTimeout(() => setSuccessMessage(''), 3000);
-//   };
-
-//   // Filter + Search
-//   const filteredTasks = tasks
-//     .filter(task =>
-//       task.text.toLowerCase().includes(searchQuery.toLowerCase())
-//     )
-//     .filter(task => {
-//       if (filterStatus === 'completed') return task.completed;
-//       if (filterStatus === 'in-progress') return !task.completed;
-//       return true;
-//     });
-
-//   const remaining = tasks.filter(task => !task.completed).length;
-
-//   return (
-//     <div className="todo-container">
-//       <h1>Get Things Done!</h1>
-
-//       {/* Input Row */}
-//       <form onSubmit={(e) => { e.preventDefault(); addTask(); }}>
-//         <input
-//           type="text"
-//           placeholder="What's your next task?"
-//           value={taskInput}
-//           onChange={(e) => setTaskInput(e.target.value)}
-//         />
-//         <button type="submit">Add New Task</button>
-//       </form>
-
-//       {/* Error & Success */}
-//       {error && <p className="error-text">{error}</p>}
-//       {successMessage && <div className="success-alert">{successMessage}</div>}
-
-//       {/* Search */}
-//       <div className="search-box">
-//         <input
-//           type="text"
-//           placeholder="Search tasks..."
-//           value={searchQuery}
-//           onChange={(e) => setSearchQuery(e.target.value)}
-//         />
-//       </div>
-
-//       {/* Filter Options */}
-//       <div className="filter-options">
-//         <label>
-//           <input
-//             type="radio"
-//             name="filter"
-//             value="all"
-//             checked={filterStatus === 'all'}
-//             onChange={() => setFilterStatus('all')}
-//           />
-//           All
-//         </label>
-//         <label>
-//           <input
-//             type="radio"
-//             name="filter"
-//             value="in-progress"
-//             checked={filterStatus === 'in-progress'}
-//             onChange={() => setFilterStatus('in-progress')}
-//           />
-//           In Progress
-//         </label>
-//         <label>
-//           <input
-//             type="radio"
-//             name="filter"
-//             value="completed"
-//             checked={filterStatus === 'completed'}
-//             onChange={() => setFilterStatus('completed')}
-//           />
-//           Completed
-//         </label>
-//       </div>
-
-//       {/* Task Count */}
-//       <p className="task-count">
-//         You have <strong>{remaining}</strong> task(s) to complete
-//       </p>
-
-//       {/* Clear All Button */}
-//       {tasks.length > 0 && (
-//         <button className="clear-btn" onClick={clearAllTasks}>
-//           Clear All Tasks
-//         </button>
-//       )}
-
-//       {/* Task List */}
-//       <ul className="todo-list">
-//         {filteredTasks.map(task => (
-//           <TodoItem
-//             key={task.id}
-//             task={task}
-//             onToggle={toggleTask}
-//             onDelete={deleteTask}
-//             onEdit={editTask}
-//           />
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default App;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// App.js
+// // App.js
 import React, { useState, useEffect } from 'react';
 import TodoItem from './components/TodoItem';
+import { saveToLocalStorage, loadFromLocalStorage } from './utils/localStorage';
 import './App.css';
-import {
-  fetchTasks,
-  addTask as addTaskAPI,
-  deleteTask as deleteTaskAPI,
-  updateTask as updateTaskAPI,
-  validateTask,
-} from './utils/api'; // ✅ make sure api.js exists
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  // ✅ Load tasks from localStorage on first render
+  const [tasks, setTasks] = useState(() => loadFromLocalStorage());
   const [taskInput, setTaskInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // ✅ Load tasks from backend on first render
+  // ✅ Save tasks to localStorage whenever they change
   useEffect(() => {
-    const loadTasks = async () => {
-      try {
-        const data = await fetchTasks();
-        setTasks(data);
-      } catch (err) {
-        console.error('❌ Failed to fetch tasks:', err);
-        setError('Could not connect to backend. Try again later.');
-      }
-    };
-    loadTasks();
-  }, []);
+    saveToLocalStorage(tasks);
+  }, [tasks]);
 
-  // ✅ Add new task (with OpenAI validation)
-  const addTask = async () => {
+  // Add new task
+  const addTask = () => {
     setError('');
     setSuccessMessage('');
 
@@ -685,114 +500,59 @@ function App() {
       setError('Please enter a task');
       return;
     }
+//Browser will store this data in local storage using JSON methods
+    setTasks([
+      ...tasks,
+      { id: Date.now(), text: trimmedTask, completed: false }
+    ]);
+    setTaskInput('');
+    setSuccessMessage('New Task Added !!!');
 
-    try {
-      // Step 1: Validate using backend (OpenAI)
-      const validation = await validateTask(trimmedTask);
-      if (!validation.valid) {
-        setError(validation.reason || 'Not a meaningful task!');
-        return;
-      }
-
-      // Step 2: Add to DynamoDB
-      await addTaskAPI(trimmedTask);
-
-      // Step 3: Reload tasks from backend
-      const updatedTasks = await fetchTasks();
-      setTasks(updatedTasks);
-
-      // Success UI feedback
-      setTaskInput('');
-      setSuccessMessage('New Task Added !!!');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
-      console.error('❌ Error adding task:', err);
-      setError('Failed to add task. Please try again.');
-    }
+    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
-  // ✅ Toggle task completion
-  const toggleTask = async (id) => {
-    try {
-      const task = tasks.find((t) => t.id === id);
-      if (!task) return;
+  // Toggle complete/incomplete
+  const toggleTask = (id) =>
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
 
-      await updateTaskAPI(id, task.text, !task.completed);
-      const updated = await fetchTasks();
-      setTasks(updated);
-    } catch (err) {
-      console.error('❌ Error toggling task:', err);
-      setError('Failed to update task status.');
-    }
+  // Delete a task
+  const deleteTask = (id) => setTasks(tasks.filter(task => task.id !== id));
+
+  // Edit a task
+  const editTask = (id, newText) =>
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, text: newText } : task
+    ));
+
+  // Optional: Clear all tasks (localStorage + state)
+  const clearAllTasks = () => {
+    setTasks([]);
+    localStorage.removeItem('todo-tasks');
+    setSuccessMessage('All tasks cleared!');
+    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
-  // ✅ Edit task text
-  const editTask = async (id, newText) => {
-    try {
-      const task = tasks.find((t) => t.id === id);
-      if (!task) return;
-
-      await updateTaskAPI(id, newText, task.completed);
-      const updated = await fetchTasks();
-      setTasks(updated);
-    } catch (err) {
-      console.error('❌ Error editing task:', err);
-      setError('Failed to edit task.');
-    }
-  };
-
-  // ✅ Delete task
-  const deleteTask = async (id) => {
-    try {
-      await deleteTaskAPI(id);
-      const updated = await fetchTasks();
-      setTasks(updated);
-    } catch (err) {
-      console.error('❌ Error deleting task:', err);
-      setError('Failed to delete task.');
-    }
-  };
-
-  // ✅ Clear all tasks (backend version)
-  const clearAllTasks = async () => {
-    try {
-      // Delete each task
-      for (const t of tasks) {
-        await deleteTaskAPI(t.id);
-      }
-      setTasks([]);
-      setSuccessMessage('All tasks cleared!');
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
-      console.error('❌ Error clearing tasks:', err);
-      setError('Failed to clear tasks.');
-    }
-  };
-
-  // ✅ Filtering + Search
+  // Filter + Search
   const filteredTasks = tasks
-    .filter((task) =>
+    .filter(task =>
       task.text.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter((task) => {
+    .filter(task => {
       if (filterStatus === 'completed') return task.completed;
       if (filterStatus === 'in-progress') return !task.completed;
       return true;
     });
 
-  const remaining = tasks.filter((task) => !task.completed).length;
+  const remaining = tasks.filter(task => !task.completed).length;
 
   return (
     <div className="todo-container">
       <h1>Get Things Done!</h1>
 
       {/* Input Row */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          addTask();
-        }}
-      >
+      <form onSubmit={(e) => { e.preventDefault(); addTask(); }}>
         <input
           type="text"
           placeholder="What's your next task?"
@@ -864,7 +624,7 @@ function App() {
 
       {/* Task List */}
       <ul className="todo-list">
-        {filteredTasks.map((task) => (
+        {filteredTasks.map(task => (
           <TodoItem
             key={task.id}
             task={task}
@@ -879,3 +639,243 @@ function App() {
 }
 
 export default App;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// // App.js
+// import React, { useState, useEffect } from 'react';
+// import TodoItem from './components/TodoItem';
+// import './App.css';
+// import {
+//   fetchTasks,
+//   addTask as addTaskAPI,
+//   deleteTask as deleteTaskAPI,
+//   updateTask as updateTaskAPI,
+//   validateTask,
+// } from './utils/api'; // ✅ make sure api.js exists
+
+// function App() {
+//   const [tasks, setTasks] = useState([]);
+//   const [taskInput, setTaskInput] = useState('');
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [successMessage, setSuccessMessage] = useState('');
+//   const [error, setError] = useState('');
+//   const [filterStatus, setFilterStatus] = useState('all');
+
+//   // ✅ Load tasks from backend on first render
+//   useEffect(() => {
+//     const loadTasks = async () => {
+//       try {
+//         const data = await fetchTasks();
+//         setTasks(data);
+//       } catch (err) {
+//         console.error('❌ Failed to fetch tasks:', err);
+//         setError('Could not connect to backend. Try again later.');
+//       }
+//     };
+//     loadTasks();
+//   }, []);
+
+//   // ✅ Add new task (with OpenAI validation)
+//   const addTask = async () => {
+//     setError('');
+//     setSuccessMessage('');
+
+//     const trimmedTask = taskInput.trim();
+//     if (!trimmedTask) {
+//       setError('Please enter a task');
+//       return;
+//     }
+
+//     try {
+//       // Step 1: Validate using backend (OpenAI)
+//       const validation = await validateTask(trimmedTask);
+//       if (!validation.valid) {
+//         setError(validation.reason || 'Not a meaningful task!');
+//         return;
+//       }
+
+//       // Step 2: Add to DynamoDB
+//       await addTaskAPI(trimmedTask);
+
+//       // Step 3: Reload tasks from backend
+//       const updatedTasks = await fetchTasks();
+//       setTasks(updatedTasks);
+
+//       // Success UI feedback
+//       setTaskInput('');
+//       setSuccessMessage('New Task Added !!!');
+//       setTimeout(() => setSuccessMessage(''), 3000);
+//     } catch (err) {
+//       console.error('❌ Error adding task:', err);
+//       setError('Failed to add task. Please try again.');
+//     }
+//   };
+
+//   // ✅ Toggle task completion
+//   const toggleTask = async (id) => {
+//     try {
+//       const task = tasks.find((t) => t.id === id);
+//       if (!task) return;
+
+//       await updateTaskAPI(id, task.text, !task.completed);
+//       const updated = await fetchTasks();
+//       setTasks(updated);
+//     } catch (err) {
+//       console.error('❌ Error toggling task:', err);
+//       setError('Failed to update task status.');
+//     }
+//   };
+
+//   // ✅ Edit task text
+//   const editTask = async (id, newText) => {
+//     try {
+//       const task = tasks.find((t) => t.id === id);
+//       if (!task) return;
+
+//       await updateTaskAPI(id, newText, task.completed);
+//       const updated = await fetchTasks();
+//       setTasks(updated);
+//     } catch (err) {
+//       console.error('❌ Error editing task:', err);
+//       setError('Failed to edit task.');
+//     }
+//   };
+
+//   // ✅ Delete task
+//   const deleteTask = async (id) => {
+//     try {
+//       await deleteTaskAPI(id);
+//       const updated = await fetchTasks();
+//       setTasks(updated);
+//     } catch (err) {
+//       console.error('❌ Error deleting task:', err);
+//       setError('Failed to delete task.');
+//     }
+//   };
+
+//   // ✅ Clear all tasks (backend version)
+//   const clearAllTasks = async () => {
+//     try {
+//       // Delete each task
+//       for (const t of tasks) {
+//         await deleteTaskAPI(t.id);
+//       }
+//       setTasks([]);
+//       setSuccessMessage('All tasks cleared!');
+//       setTimeout(() => setSuccessMessage(''), 3000);
+//     } catch (err) {
+//       console.error('❌ Error clearing tasks:', err);
+//       setError('Failed to clear tasks.');
+//     }
+//   };
+
+//   // ✅ Filtering + Search
+//   const filteredTasks = tasks
+//     .filter((task) =>
+//       task.text.toLowerCase().includes(searchQuery.toLowerCase())
+//     )
+//     .filter((task) => {
+//       if (filterStatus === 'completed') return task.completed;
+//       if (filterStatus === 'in-progress') return !task.completed;
+//       return true;
+//     });
+
+//   const remaining = tasks.filter((task) => !task.completed).length;
+
+//   return (
+//     <div className="todo-container">
+//       <h1>Get Things Done!</h1>
+
+//       {/* Input Row */}
+//       <form
+//         onSubmit={(e) => {
+//           e.preventDefault();
+//           addTask();
+//         }}
+//       >
+//         <input
+//           type="text"
+//           placeholder="What's your next task?"
+//           value={taskInput}
+//           onChange={(e) => setTaskInput(e.target.value)}
+//         />
+//         <button type="submit">Add New Task</button>
+//       </form>
+
+//       {/* Error & Success */}
+//       {error && <p className="error-text">{error}</p>}
+//       {successMessage && <div className="success-alert">{successMessage}</div>}
+
+//       {/* Search */}
+//       <div className="search-box">
+//         <input
+//           type="text"
+//           placeholder="Search tasks..."
+//           value={searchQuery}
+//           onChange={(e) => setSearchQuery(e.target.value)}
+//         />
+//       </div>
+
+//       {/* Filter Options */}
+//       <div className="filter-options">
+//         <label>
+//           <input
+//             type="radio"
+//             name="filter"
+//             value="all"
+//             checked={filterStatus === 'all'}
+//             onChange={() => setFilterStatus('all')}
+//           />
+//           All
+//         </label>
+//         <label>
+//           <input
+//             type="radio"
+//             name="filter"
+//             value="in-progress"
+//             checked={filterStatus === 'in-progress'}
+//             onChange={() => setFilterStatus('in-progress')}
+//           />
+//           In Progress
+//         </label>
+//         <label>
+//           <input
+//             type="radio"
+//             name="filter"
+//             value="completed"
+//             checked={filterStatus === 'completed'}
+//             onChange={() => setFilterStatus('completed')}
+//           />
+//           Completed
+//         </label>
+//       </div>
+
+//       {/* Task Count */}
+//       <p className="task-count">
+//         You have <strong>{remaining}</strong> task(s) to complete
+//       </p>
+
+//       {/* Clear All Button */}
+//       {tasks.length > 0 && (
+//         <button className="clear-btn" onClick={clearAllTasks}>
+//           Clear All Tasks
+//         </button>
+//       )}
+
+//       {/* Task List */}
+//       <ul className="todo-list">
+//         {filteredTasks.map((task) => (
+//           <TodoItem
+//             key={task.id}
+//             task={task}
+//             onToggle={toggleTask}
+//             onDelete={deleteTask}
+//             onEdit={editTask}
+//           />
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// export default App;

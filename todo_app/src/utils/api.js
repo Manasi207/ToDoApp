@@ -1,6 +1,6 @@
 // src/utils/api.js
 // 👇 Replace with your actual backend URL (EC2 Public IP or Render domain)
-const API_BASE = "http://13.62.76.221:5000";
+const API_BASE = "http://13.60.173.117:5000";
 
 // ✅ Get all tasks (from DynamoDB)
 export const fetchTasks = async () => {
