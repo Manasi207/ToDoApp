@@ -1,0 +1,11 @@
+{
+  "name": "todo-lambda",
+  "version": "1.0.0",
+  "description": "Lambda backend for Todo App",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.910.0",
+    "@aws-sdk/util-dynamodb": "^3.910.0",
+    "uuid": "^9.0.1"
+  }
+}

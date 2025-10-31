@@ -2,7 +2,7 @@
 body {
   font-family: "Segoe UI", sans-serif;
   background: #ffffff;
-  color: #313131; /* DATION text */
+  color: #313131;
   margin-top: 55px;
   padding: 0;
   display: flex;
@@ -19,27 +19,19 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   max-width: 600px;
   width: 100%;
+  position: relative; /* to position alerts inside */
 }
 
 /* Header */
 h1 {
   font-size: 36px;
   margin-bottom: 20px;
-  border-bottom: #2c2c2c;
-  border-bottom-width: 2px;
   padding-bottom: 12px;
   text-align: center;
-  color: #2c2c2c; /* Darker text for better contrast */
-}
-h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  font-weight: 600;
-  border-bottom: 1px solid #d4d3d3;
-  padding-bottom: 5px;
+  color: #2c2c2c;
 }
 
-/* Form: Add task + Search */
+/* Form */
 form {
   display: flex;
   gap: 10px;
@@ -63,7 +55,6 @@ button[type="submit"] {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  font-style: bold;
   font-size: 16px;
 }
 
@@ -77,30 +68,20 @@ button[type="submit"]:hover {
 }
 
 .search-box input {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   width: 93%;
-  padding: 7px 10px;
+  padding: 10px 12px;
   border: 1px solid #bbb;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 15px;
   background-color: white;
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Task count */
+/* Task Count */
 .task-count {
   font-size: 14px;
   margin-bottom: 10px;
 }
-
 .task-count strong {
   color: #2c2c2c;
 }
@@ -125,7 +106,7 @@ li.todo-item {
 
 /* Checkbox */
 .todo-item input[type="checkbox"] {
-  accent-color: #5b2cff; /* Custom primary checkbox color */
+  accent-color: #5b2cff;
   width: 18px;
   height: 18px;
   margin-right: 12px;
@@ -182,7 +163,7 @@ li.todo-item {
   background-color: #c53030;
 }
 
-/* Edit input */
+/* Edit Input */
 .edit-input {
   padding: 6px 8px;
   border: 1px solid #ccc;
@@ -191,70 +172,55 @@ li.todo-item {
   width: 100%;
   margin-left: 10px;
 }
-.success-alert {
-  background-color: #38a169; /* green-600 */
-  color: white;
-  padding: 8px 10px;
+
+/* 🔔 Alert Popup (Inside Container) */
+.alert-popup {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  text-align: center;
+  padding: 10px 12px;
   border-radius: 8px;
-  font-size: 14px;
-  font-style: bold;
-  margin-bottom: 15px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-/* Error Message */
-.error-msg {
-  color: #e53e3e; /* Red */
-  margin-top: 6px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: left;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Success Message already exists */
-.success-alert {
-  background-color: #38a169;
   color: white;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 14px;
-  margin-bottom: 15px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
+  font-weight: 600;
+  animation: fadeInOut 2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 5;
 }
 
-@keyframes fadeIn {
-  from {
+.alert-popup.success {
+  background-color: #38a169; /* Green */
+}
+
+.alert-popup.warning {
+  background-color: #d69e2e; /* Yellow */
+}
+
+.alert-popup.error {
+  background-color: #e53e3e; /* Red */
+}
+
+@keyframes fadeInOut {
+  0% {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translate(-50%, -10px);
   }
-  to {
+  15% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
   }
 }
-/* error for task input */
-.error-text {
-  color: #e53e3e;
-  font-size: 14px;
-  margin-top: 4px;
-  text-align: center;
-}
+
 /* Filter Options */
 .filter-options {
   display: flex;
@@ -278,7 +244,7 @@ li.todo-item {
 }
 
 .filter-options input[type="radio"] {
-  accent-color: #007bff; /* Blue */
+  accent-color: #007bff;
   width: 16px;
   height: 16px;
 }

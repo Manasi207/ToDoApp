@@ -2,8 +2,8 @@
 export const saveToLocalStorage = (tasks) => {
   try {
     localStorage.setItem('todo-tasks', JSON.stringify(tasks));
-  } catch (e) {
-    console.warn("Failed to save to localStorage", e);
+  } catch (err) {
+    console.warn('Failed to save tasks:', err);
   }
 };
 
@@ -11,8 +11,9 @@ export const loadFromLocalStorage = () => {
   try {
     const data = localStorage.getItem('todo-tasks');
     return data ? JSON.parse(data) : [];
-  } catch (e) {
-    console.warn("Failed to load from localStorage", e);
+  } catch (err) {
+    console.warn('Failed to load tasks:', err);
     return [];
   }
 };
+

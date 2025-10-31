@@ -1,5 +1,6 @@
 
 //TodoItem.js
+
 import React, { useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
@@ -8,8 +9,10 @@ function TodoItem({ task, onToggle, onDelete, onEdit }) {
   const [newText, setNewText] = useState(task.text);
 
   const handleEditSave = () => {
-    onEdit(task.id, newText);
-    setIsEditing(false);
+    if (newText.trim() !== '') {
+      onEdit(task.id, newText.trim());
+      setIsEditing(false);
+    }
   };
 
   return (
