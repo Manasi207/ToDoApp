@@ -8,4 +8,4 @@ Develop a React To-Do List component allowing task addition, removal, and comple
 4. Applied validations such as required fields and character & no digits validations.
 5. Tried to applied meaningful validations using OpenAI API using node.
    (To avoid meaningless string "hi", "okay", "hello")
-6. Added local storage to store todos, which will persist even after page refresh.
+6. Added local JSON File storage using API Calls to store todos, which will persist even after page refresh.
